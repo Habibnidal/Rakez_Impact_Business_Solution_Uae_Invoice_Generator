@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generate Invoice – IMPACT BUSINESS SOLUTIONS</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f4f6f8;
+      color: #333;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      padding: 30px;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #d32f2f;
+      padding-bottom: 15px;
+      margin-bottom: 25px;
+    }
+
+    .brand-title {
+      font-size: 20px;
+      font-weight: bold;
+      color: #d32f2f;
+      letter-spacing: 0.5px;
+    }
+
+    .brand-subtitle {
+      font-size: 13px;
+      color: #666;
+      font-style: italic;
+    }
+
+    .back-btn {
+      display: inline-block;
+      text-decoration: none;
+      color: #d32f2f;
+      font-weight: bold;
+      font-size: 14px;
+      padding: 8px 14px;
+      border: 1px solid #d32f2f;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .back-btn:hover {
+      background: #d32f2f;
+      color: white;
+    }
+
+    h2 {
+      margin-top: 0;
+      margin-bottom: 20px;
+      color: #1a1a1a;
+      font-size: 24px;
+    }
+
+    .section-card {
+      background: #fafafa;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: bold;
+      color: #222;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-desc {
+      font-size: 12px;
+      color: #666;
+      margin-top: -10px;
+      margin-bottom: 15px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 15px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      font-size: 13px;
+      font-weight: bold;
+      margin-bottom: 6px;
+      color: #444;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: inherit;
+      transition: border-color 0.2s;
+      background: #fff;
+    }
+
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    input[type="date"]:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #d32f2f;
+      box-shadow: 0 0 0 2px rgba(211, 47, 47, 0.15);
+    }
+
+    .date-input-wrapper {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .date-input-wrapper input[type="text"] {
+      flex: 1;
+    }
+
+    .date-input-wrapper input[type="date"] {
+      width: 44px;
+      padding: 8px;
+      cursor: pointer;
+    }
+
+    /* Table styling */
+    .table-responsive {
+      overflow-x: auto;
+      margin-top: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 550px;
+      background: #fff;
+    }
+
+    th {
+      background: #d32f2f;
+      color: white;
+      text-align: left;
+      padding: 10px;
+      font-size: 13px;
+      font-weight: bold;
+      border: 1px solid #c2185b;
+    }
+
+    td {
+      border: 1px solid #e0e0e0;
+      padding: 8px;
+    }
+
+    .table-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 12px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .btn-secondary {
+      background: #e0e0e0;
+      color: #333;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 16px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: bold;
+      transition: background 0.2s;
+    }
+
+    .btn-secondary:hover {
+      background: #d0d0d0;
+    }
+
+    .btn-remove {
+      background: #ffebee;
+      color: #d32f2f;
+      border: 1px solid #ffcdd2;
+      border-radius: 4px;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: bold;
+      transition: all 0.2s;
+    }
+
+    .btn-remove:hover {
+      background: #d32f2f;
+      color: white;
+    }
+
+    .subtotal-preview {
+      font-size: 15px;
+      font-weight: bold;
+      color: #d32f2f;
+      background: #ffebee;
+      padding: 8px 14px;
+      border-radius: 6px;
+    }
+
+    /* Optional sections styling */
+    .checkbox-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      user-select: none;
+      font-weight: bold;
+      font-size: 14px;
+      color: #222;
+    }
+
+    .checkbox-container input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      accent-color: #d32f2f;
+    }
+
+    .collapsible-textarea {
+      margin-top: 12px;
+      transition: all 0.3s ease;
+    }
+
+    textarea {
+      resize: vertical;
+      line-height: 1.5;
+    }
+
+    /* Primary Submit */
+    .submit-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid #e0e0e0;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .btn-primary {
+      background: #d32f2f;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 14px 32px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(211, 47, 47, 0.3);
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary:hover {
+      background: #b71c1c;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 14px rgba(211, 47, 47, 0.4);
+    }
+
+    .btn-reset {
+      background: transparent;
+      color: #777;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 12px 20px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-reset:hover {
+      background: #f0f0f0;
+      color: #333;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 10px;
+      }
+      .container {
+        padding: 15px;
+      }
+      .top-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      .submit-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .btn-primary {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div>
+      <div class="brand-title">IMPACT BUSINESS SOLUTIONS</div>
+      <div class="brand-subtitle">The Complete Business Solutions</div>
+    </div>
+    <a href="index.html" class="back-btn">← Home</a>
+  </div>
+
+  <h2>Generate Invoice</h2>
+
+  <form id="invoiceForm" method="POST" action="/generate-invoice">
+
+    <!-- DOCUMENT DETAILS SECTION -->
+    <div class="section-card">
+      <div class="section-title">📄 Invoice Details</div>
+      <div class="form-grid">
+
+        <!-- CLIENT NAME -->
+        <div class="form-group">
+          <label for="client_name">Client Name *</label>
+          <input type="text" id="client_name" name="client_name" required placeholder="e.g. ABC Trading LLC">
+        </div>
+
+        <!-- INVOICE NO -->
+        <div class="form-group">
+          <label for="invoice_no">Invoice No *</label>
+          <input type="text" id="invoice_no" name="invoice_no" required placeholder="e.g. 3883">
+        </div>
+
+        <!-- DOCUMENT DATE (EDITABLE) -->
+        <div class="form-group">
+          <label for="doc_date">Invoice Date *</label>
+          <div class="date-input-wrapper">
+            <input type="text" id="doc_date" name="doc_date" required placeholder="DD/MM/YYYY">
+            <input type="date" id="date_picker" title="Pick date from calendar">
+          </div>
+        </div>
+
+        <!-- COMPANY EMAIL (EDITABLE) -->
+        <div class="form-group">
+          <label for="company_email">Company Email</label>
+          <input type="text" id="company_email" name="company_email" value="npnufail@gmail.com" placeholder="e.g. npnufail@gmail.com">
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ITEMS TABLE SECTION -->
+    <div class="section-card">
+      <div class="section-title">📦 Item Descriptions</div>
+      
+      <div class="table-responsive">
+        <table id="itemsTable">
+          <thead>
+            <tr>
+              <th style="width: 50%;">Description</th>
+              <th style="width: 18%;">Qty</th>
+              <th style="width: 22%;">Unit Price (AED)</th>
+              <th style="width: 10%; text-align: center;">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><input type="text" name="desc[]" required placeholder="Item description" oninput="calculateSubtotal()"></td>
+              <td><input type="number" name="qty[]" step="any" min="0" required placeholder="1" oninput="calculateSubtotal()"></td>
+              <td><input type="number" name="price[]" step="any" min="0" required placeholder="0.00" oninput="calculateSubtotal()"></td>
+              <td style="text-align: center;"><button type="button" class="btn-remove" onclick="removeRow(this)">✕</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="table-actions">
+        <button type="button" class="btn-secondary" onclick="addRow()">➕ Add Row</button>
+        <div class="subtotal-preview" id="subtotalDisplay">Subtotal: 0.00 AED</div>
+      </div>
+    </div>
+
+    <!-- SECTION 2: REMARKS (OPTIONAL - ABOVE PAYMENT TERMS) -->
+    <div class="section-card">
+      <label class="checkbox-container" for="enable_remarks">
+        <input type="checkbox" id="enable_remarks" name="enable_remarks" onchange="toggleRemarks()">
+        <span>Remarks</span>
+      </label>
+
+      <div id="remarksContainer" class="collapsible-textarea" style="display: none;">
+        <textarea id="remarks" name="remarks" rows="3" placeholder="Enter remarks or instructions..."></textarea>
+      </div>
+    </div>
+
+    <!-- SECTION 1: PAYMENT TERMS AND CONDITIONS (OPTIONAL - BELOW REMARKS) -->
+    <div class="section-card">
+      <label class="checkbox-container" for="enable_terms">
+        <input type="checkbox" id="enable_terms" name="enable_terms" onchange="toggleTerms()">
+        <span>Payment Terms and Conditions</span>
+      </label>
+
+      <div id="termsContainer" class="collapsible-textarea" style="display: none;">
+        <textarea id="payment_terms" name="payment_terms" rows="4" placeholder="Enter custom payment terms and conditions..."></textarea>
+      </div>
+    </div>
+
+    <!-- SECTION 3: EDITABLE PAYMENT DETAILS -->
+    <div class="section-card">
+      <div class="section-title">💳 Payment Details</div>
+      <div class="section-desc">You can modify the payment information before generating the invoice. Defaults match IBS bank details.</div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="payment_method">Payment Header</label>
+          <input type="text" id="payment_method" name="payment_method" value="PAYMENT VIA BANK :-">
+        </div>
+
+        <div class="form-group">
+          <label for="beneficiary_name">Beneficiary Name</label>
+          <input type="text" id="beneficiary_name" name="beneficiary_name" value="NUFAIL PUNNAKKAL">
+        </div>
+
+        <div class="form-group">
+          <label for="bank_name">Bank Name</label>
+          <input type="text" id="bank_name" name="bank_name" value="ADCB">
+        </div>
+
+        <div class="form-group">
+          <label for="account_no">Account No</label>
+          <input type="text" id="account_no" name="account_no" value="557535132001">
+        </div>
+
+        <div class="form-group" style="grid-column: 1 / -1;">
+          <label for="iban_no">IBAN No</label>
+          <input type="text" id="iban_no" name="iban_no" value="AE150030000557535132001">
+        </div>
+      </div>
+    </div>
+
+    <!-- SUBMIT BAR -->
+    <div class="submit-bar">
+      <button type="button" class="btn-reset" onclick="resetForm()">Reset to Defaults</button>
+      <button type="submit" class="btn-primary">Generate PDF</button>
+    </div>
+
+  </form>
+
+</div>
+
+<script>
+const DRAFT_KEY = 'impact_invoice_draft';
+
+// Format Date as DD/MM/YYYY
+function getTodayFormatted() {
+  const today = new Date();
+  const d = String(today.getDate()).padStart(2, '0');
+  const m = String(today.getMonth() + 1).padStart(2, '0');
+  const y = today.getFullYear();
+  return `${d}/${m}/${y}`;
+}
+
+function getTodayIso() {
+  const today = new Date();
+  const d = String(today.getDate()).padStart(2, '0');
+  const m = String(today.getMonth() + 1).padStart(2, '0');
+  const y = today.getFullYear();
+  return `${y}-${m}-${d}`;
+}
+
+// Date Picker Synchronization
+const docDateInput = document.getElementById("doc_date");
+const datePicker = document.getElementById("date_picker");
+
+datePicker.addEventListener("change", function() {
+  if (this.value) {
+    const parts = this.value.split("-");
+    docDateInput.value = `${parts[2]}/${parts[1]}/${parts[0]}`;
+    saveDraft();
+  }
+});
+
+docDateInput.addEventListener("input", function() {
+  const val = this.value.trim();
+  if (/^\d{2}\/\d{2}\/\d{4}$/.test(val)) {
+    const parts = val.split("/");
+    datePicker.value = `${parts[2]}-${parts[1]}-${parts[0]}`;
+  }
+  saveDraft();
+});
+
+// Row Management
+function addRow(desc = "", qty = "", price = "") {
+  const tbody = document.querySelector("#itemsTable tbody");
+  const row = document.createElement("tr");
+  row.innerHTML = `
+    <td><input type="text" name="desc[]" value="${escapeAttr(desc)}" required placeholder="Item description" oninput="calculateSubtotal()"></td>
+    <td><input type="number" name="qty[]" value="${escapeAttr(qty)}" step="any" min="0" required placeholder="1" oninput="calculateSubtotal()"></td>
+    <td><input type="number" name="price[]" value="${escapeAttr(price)}" step="any" min="0" required placeholder="0.00" oninput="calculateSubtotal()"></td>
+    <td style="text-align: center;"><button type="button" class="btn-remove" onclick="removeRow(this)">✕</button></td>
+  `;
+  tbody.appendChild(row);
+  calculateSubtotal();
+  saveDraft();
+}
+
+function removeRow(btn) {
+  const tbody = document.querySelector("#itemsTable tbody");
+  if (tbody.rows.length > 1) {
+    btn.closest("tr").remove();
+  } else {
+    // Keep at least one row, just clear it
+    const row = tbody.rows[0];
+    row.querySelectorAll("input").forEach(i => i.value = "");
+  }
+  calculateSubtotal();
+  saveDraft();
+}
+
+// Subtotal calculation
+function calculateSubtotal() {
+  const quantities = document.getElementsByName("qty[]");
+  const prices = document.getElementsByName("price[]");
+  let subtotal = 0;
+
+  for (let i = 0; i < quantities.length; i++) {
+    const q = parseFloat(quantities[i].value) || 0;
+    const p = parseFloat(prices[i].value) || 0;
+    subtotal += q * p;
+  }
+
+  document.getElementById("subtotalDisplay").textContent = `Subtotal: ${subtotal.toFixed(2)} AED`;
+  saveDraft();
+}
+
+// Remarks Toggle
+function toggleRemarks() {
+  const enabled = document.getElementById("enable_remarks").checked;
+  const container = document.getElementById("remarksContainer");
+  container.style.display = enabled ? "block" : "none";
+  if (enabled) {
+    document.getElementById("remarks").focus();
+  }
+  saveDraft();
+}
+
+// Payment Terms Toggle
+function toggleTerms() {
+  const enabled = document.getElementById("enable_terms").checked;
+  const container = document.getElementById("termsContainer");
+  container.style.display = enabled ? "block" : "none";
+  if (enabled) {
+    document.getElementById("payment_terms").focus();
+  }
+  saveDraft();
+}
+
+// Save & Restore Draft (Persistence)
+function saveDraft() {
+  try {
+    const descs = Array.from(document.getElementsByName("desc[]")).map(i => i.value);
+    const qtys = Array.from(document.getElementsByName("qty[]")).map(i => i.value);
+    const prices = Array.from(document.getElementsByName("price[]")).map(i => i.value);
+
+    const draft = {
+      client_name: document.getElementById("client_name").value,
+      invoice_no: document.getElementById("invoice_no").value,
+      doc_date: document.getElementById("doc_date").value,
+      date_picker: document.getElementById("date_picker").value,
+      company_email: document.getElementById("company_email").value,
+      descs,
+      qtys,
+      prices,
+      enable_remarks: document.getElementById("enable_remarks").checked,
+      remarks: document.getElementById("remarks").value,
+      enable_terms: document.getElementById("enable_terms").checked,
+      payment_terms: document.getElementById("payment_terms").value,
+      payment_method: document.getElementById("payment_method").value,
+      beneficiary_name: document.getElementById("beneficiary_name").value,
+      bank_name: document.getElementById("bank_name").value,
+      account_no: document.getElementById("account_no").value,
+      iban_no: document.getElementById("iban_no").value
+    };
+
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+  } catch (e) {}
+}
+
+function restoreDraft() {
+  try {
+    const raw = localStorage.getItem(DRAFT_KEY);
+    if (!raw) {
+      // First load defaults
+      docDateInput.value = getTodayFormatted();
+      datePicker.value = getTodayIso();
+      return;
+    }
+
+    const draft = JSON.parse(raw);
+
+    if (draft.client_name) document.getElementById("client_name").value = draft.client_name;
+    if (draft.invoice_no) document.getElementById("invoice_no").value = draft.invoice_no;
+    if (draft.company_email !== undefined) document.getElementById("company_email").value = draft.company_email;
+    document.getElementById("doc_date").value = draft.doc_date || getTodayFormatted();
+    document.getElementById("date_picker").value = draft.date_picker || getTodayIso();
+
+    // Restore table rows
+    if (draft.descs && draft.descs.length > 0) {
+      const tbody = document.querySelector("#itemsTable tbody");
+      tbody.innerHTML = "";
+      draft.descs.forEach((d, i) => {
+        addRow(d, draft.qtys ? draft.qtys[i] : "", draft.prices ? draft.prices[i] : "");
+      });
+    }
+
+    // Restore Remarks
+    if (draft.enable_remarks) {
+      document.getElementById("enable_remarks").checked = true;
+      document.getElementById("remarksContainer").style.display = "block";
+    }
+    if (draft.remarks) document.getElementById("remarks").value = draft.remarks;
+
+    // Restore Terms
+    if (draft.enable_terms) {
+      document.getElementById("enable_terms").checked = true;
+      document.getElementById("termsContainer").style.display = "block";
+    }
+    if (draft.payment_terms) document.getElementById("payment_terms").value = draft.payment_terms;
+
+    // Restore Payment Details
+    if (draft.payment_method !== undefined) document.getElementById("payment_method").value = draft.payment_method;
+    if (draft.beneficiary_name !== undefined) document.getElementById("beneficiary_name").value = draft.beneficiary_name;
+    if (draft.bank_name !== undefined) document.getElementById("bank_name").value = draft.bank_name;
+    if (draft.account_no !== undefined) document.getElementById("account_no").value = draft.account_no;
+    if (draft.iban_no !== undefined) document.getElementById("iban_no").value = draft.iban_no;
+
+    calculateSubtotal();
+  } catch (e) {
+    docDateInput.value = getTodayFormatted();
+    datePicker.value = getTodayIso();
+  }
+}
+
+function resetForm() {
+  if (confirm("Are you sure you want to reset the form to defaults?")) {
+    localStorage.removeItem(DRAFT_KEY);
+    document.getElementById("invoiceForm").reset();
+
+    // Reset date
+    docDateInput.value = getTodayFormatted();
+    datePicker.value = getTodayIso();
+
+    // Reset table to 1 empty row
+    const tbody = document.querySelector("#itemsTable tbody");
+    tbody.innerHTML = `
+      <tr>
+        <td><input type="text" name="desc[]" required placeholder="Item description" oninput="calculateSubtotal()"></td>
+        <td><input type="number" name="qty[]" step="any" min="0" required placeholder="1" oninput="calculateSubtotal()"></td>
+        <td><input type="number" name="price[]" step="any" min="0" required placeholder="0.00" oninput="calculateSubtotal()"></td>
+        <td style="text-align: center;"><button type="button" class="btn-remove" onclick="removeRow(this)">✕</button></td>
+      </tr>
+    `;
+
+    // Reset payment details to original defaults
+    document.getElementById("company_email").value = "npnufail@gmail.com";
+    document.getElementById("payment_method").value = "PAYMENT VIA BANK :-";
+    document.getElementById("beneficiary_name").value = "NUFAIL PUNNAKKAL";
+    document.getElementById("bank_name").value = "ADCB";
+    document.getElementById("account_no").value = "557535132001";
+    document.getElementById("iban_no").value = "AE150030000557535132001";
+
+    // Hide optional sections
+    document.getElementById("enable_remarks").checked = false;
+    document.getElementById("remarksContainer").style.display = "none";
+    document.getElementById("remarks").value = "";
+
+    document.getElementById("enable_terms").checked = false;
+    document.getElementById("termsContainer").style.display = "none";
+    document.getElementById("payment_terms").value = "";
+
+    calculateSubtotal();
+  }
+}
+
+function escapeAttr(str) {
+  if (!str) return "";
+  return String(str).replace(/"/g, '&quot;');
+}
+
+// Auto-save on any change in form
+document.getElementById("invoiceForm").addEventListener("input", saveDraft);
+
+// Initial restore
+restoreDraft();
+</script>
+
+</body>
+</html>
